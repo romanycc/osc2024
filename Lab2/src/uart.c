@@ -1,6 +1,7 @@
 #include "aux.h"
 #include "gpio.h"
 #include "mystring.h"
+#include "mymath.h"
 
 void uart_init() {
     /* Initialize UART */
@@ -84,6 +85,28 @@ void uart_printf(char* fmt, ...) {
             // escape %
             if (*fmt == '%') {
                 goto put;
+            }
+            // ascii to char
+            if (*fmt == 'c') {
+                int arg = __builtin_va_arg(args, int);
+                char buf[11];
+                // change to decimal
+                char *p = itoa(arg, buf);
+                char *pp = p;
+                int len = 0;
+                // count len
+                while(*pp){
+                    len++;
+                    pp++;
+                }
+                int tmp = 0;
+                for (int i=0;i<len;i++){
+                    tmp = tmp + (*p-'0') * pow(10, len-i-1);
+                    p++;
+                }
+                // change decimal to ascii
+                char character = (char)(tmp);
+                *dst++ = character;
             }
             // string
             if (*fmt == 's') {

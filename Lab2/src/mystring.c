@@ -1,6 +1,7 @@
 #include "mymath.h"
 #include "../include/peripherals/mbox.h"
-
+#include "uart.h"
+// int to hex
 char *itox(int value, char *s) {
     int idx = 0;
 
@@ -93,78 +94,6 @@ char *ftoa(float value, char *s) {
     return s;
 }
 
-
-// // dst : _end, fmt : char arr, args : va_list
-// // printf("Your age is: %d", age);
-// unsigned int vsprintf(char *dst, char *fmt){//, __builtin_va_list args){
-//     // copy _end
-//     __builtin_va_list args;
-//     return 1;
-//     uart_puts("here3\n");   
-//     char *dst_orig = dst;
-//     uart_puts("here4\n");   
-//     while (*fmt) {
-//         uart_puts("here8\n");
-//         if (*fmt == '%') {
-//             fmt++;
-//             // escape %
-//             if (*fmt == '%') {
-//                 goto put;
-//             }
-//             // string
-//             if (*fmt == 's') {
-//                 char *p = __builtin_va_arg(args, char *);
-//                 while (*p) {
-//                     *dst++ = *p++;
-//                 }
-//             }
-//             // number
-//             if (*fmt == 'd') {
-//                 int arg = __builtin_va_arg(args, int);
-//                 char buf[11];
-//                 char *p = itoa(arg, buf);
-//                 while (*p) {
-//                     *dst++ = *p++;
-//                 }
-//             }
-//             // float
-//             if (*fmt == 'f') {
-//                 float arg = (float) __builtin_va_arg(args, double);
-//                 char buf[19];  // sign + 10 int + dot + 6 float
-//                 char *p = ftoa(arg, buf);
-//                 while (*p) {
-//                     *dst++ = *p++;
-//                 }
-//             }
-//             // hex
-//             if (*fmt == 'x') {
-//                 // get %x's value
-//                 int arg = __builtin_va_arg(args, int);
-//                 char buf[8 + 1];
-//                 char *p = itox(arg, buf);
-//                 while (*p) {
-//                     *dst++ = *p++;
-//                 }
-//             }
-//         } else {
-//         put:
-//             *dst++ = *fmt;
-//             uart_puts("here9\n");
-//         }
-//         fmt++;
-//         uart_puts("here10\n");
-//     }
-//     *dst = '\0';
-//     uart_puts("here11\n");
-//     return dst - dst_orig;  // return how many bytes are written
-// }
-// unsigned int sprintf(char *dst, char *fmt, ...){
-//     __builtin_va_list args;
-//     __builtin_va_start(args, fmt);
-//     return vsprintf(dst, fmt);//, args);
-// }
-
-
 int strcmp(const char *X, const char *Y){
     while(*X){
         if (*X != *Y){
@@ -174,4 +103,15 @@ int strcmp(const char *X, const char *Y){
         Y++;
     }
     return *(const unsigned char *)X - *(const unsigned char *)Y;
+}
+
+int strcmpl(const char *X, const char *Y, int len){
+    for (int i=0; i<len; i++){
+        if (*X != *Y){
+            return 1;
+        }
+        X++;
+        Y++;
+    }
+    return 0;
 }
