@@ -75,7 +75,7 @@ void uart_printf(char* fmt, ...) {
     //
     //unsigned int vsprintf(char *dst, char *fmt){//, __builtin_va_list args){
     
-    char *dst_orig = s;
+    //char *dst_orig = s;
     char *dst = s;
     while (*fmt) {
         
