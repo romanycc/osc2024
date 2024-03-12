@@ -130,9 +130,6 @@ void shell_controller(char* cmd) {
         while (1); // hang until reboot
     }
     else if (!strcmpl(cmd, "cat", 3)) {
-        //command_getCpioFile((void *) INITRAMFS_ADDR, buffer + 4);
-        //void command_getCpioFile(void *initramfs_addr, char *buf)
-        //{
         unsigned long fileSize;
         char *result = cpio_get_file((void *) INITRAMFS_ADDR, cmd+4, &fileSize);
         if (result != NULL) {
@@ -143,7 +140,6 @@ void shell_controller(char* cmd) {
         } else {
             uart_printf("'%s' file  not exist!\n", cmd+4);
         }
-        //}
     }
     else if (!strcmp(cmd, "ls")) {
          cpio_ls((void *) INITRAMFS_ADDR);
