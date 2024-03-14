@@ -100,4 +100,9 @@ void *cpio_get_file(void *archive, const char *name, unsigned long *size);
  */
 void cpio_ls(void *archive);
 
+// Callback function of dts
+int initrd_fdt_callback(void *, int);
+int initrd_getLo(void);
+
+
 #endif /* _LIB_CPIO_H_ */

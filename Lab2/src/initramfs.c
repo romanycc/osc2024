@@ -1,5 +1,7 @@
 #include "initramfs.h"
 #include "uart.h"
+#include "dtb.h"
+static void *lo_ramfs = 0x0;
 
 /* Align 'n' up to the value 'align', which must be a power of two. */
 static unsigned long align_up(unsigned long n, unsigned long align)
@@ -148,4 +150,25 @@ void cpio_ls(void *archive) {
     }
 }
 
+/*********************************************************
+ * This is callback function for getting the start
+ * address of the initrd. Please use this function 
+ * with `fdt_find_do()`.
+ *******************************************************/
+int initrd_fdt_callback(void *start, int size) {
+  if (size != 4) {
+    //uart_puti(size);
+    uart_printf("%d", size);
+    uart_puts("Size not 4!\n");
+    return 1;
+  }
+  uint32_t t = *((uint32_t *)start);
+  lo_ramfs = (void *)(b2l_32(t));
+  return 0;
+}
+
+/********************************************************
+ * Function return the location (address) of the initrd.
+ *******************************************************/
+int initrd_getLo() { return lo_ramfs; }
 

@@ -3,6 +3,7 @@
 .global _relocate
 
 _relocate:
+    mov	    x25, x0		// Note: x0 for the start address of dtb
     // get cpu id
     mrs     x1, MPIDR_EL1
     and     x1, x1, #3

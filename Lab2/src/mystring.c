@@ -2,7 +2,7 @@
 #include "../include/peripherals/mbox.h"
 #include "uart.h"
 // int to hex
-char *itox(int value, char *s) {
+char *itox(unsigned int value, char *s) {
     int idx = 0;
 
     char tmp[8 + 1];

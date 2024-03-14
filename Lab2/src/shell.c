@@ -3,6 +3,7 @@
 #include "util.h"
 #include "mbox.h"
 #include "initramfs.h"
+#include <stdint.h>
 enum ANSI_ESC {
     Unknown,
     CursorForward,
@@ -105,7 +106,7 @@ void shell_input(char* cmd) {
 
     uart_puts("\n");
 }
-void shell_controller(char* cmd) {
+void shell_controller(char* cmd, void *dtb_location) {
     if (!strcmp(cmd, "")) {
         return;
     }
@@ -131,7 +132,7 @@ void shell_controller(char* cmd) {
     }
     else if (!strcmpl(cmd, "cat", 3)) {
         unsigned long fileSize;
-        char *result = cpio_get_file((void *) INITRAMFS_ADDR, cmd+4, &fileSize);
+        char *result = cpio_get_file((void *)initrd_getLo(), cmd+4, &fileSize);
         if (result != NULL) {
             for (int i = 0;i < fileSize;i++) {
                 uart_printf("%c", result[i]);
@@ -142,7 +143,7 @@ void shell_controller(char* cmd) {
         }
     }
     else if (!strcmp(cmd, "ls")) {
-         cpio_ls((void *) INITRAMFS_ADDR);
+        cpio_ls((void *)initrd_getLo());
     }
     else {
         uart_printf("shell: command not found: %s\n", cmd);

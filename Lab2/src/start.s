@@ -24,8 +24,11 @@ _start:
     str     xzr, [x1], #8
     sub     x2, x2, #1
     cbnz    x2, 3b
-
-    // jump to main function in C
-4:  bl      main
+  
+4:  
+    // command this line if using qemu
+    mov     x0, x25       
+    // jump to main function in C      
+    bl      main
     // halt this core if return
     b       1b

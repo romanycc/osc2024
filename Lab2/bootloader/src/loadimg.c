@@ -34,6 +34,7 @@ void loadimg() {
     else {
         uart_printf("Success!\n");
         void (*start_os)(void) = (void *)kernel;
+        // __asm__("mov x0, x25");
         start_os();
     }
 }
