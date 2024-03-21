@@ -1,5 +1,5 @@
 #include "shell.h"
-#include "uart.h"
+#include "uart0.h"
 #include "heap.h"
 #include "dtb.h"
 #include "initramfs.h"

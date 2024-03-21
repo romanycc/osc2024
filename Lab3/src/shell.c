@@ -1,5 +1,5 @@
 #include "mystring.h"
-#include "uart.h"
+#include "uart0.h"
 #include "util.h"
 #include "mbox.h"
 #include "initramfs.h"
@@ -117,6 +117,8 @@ void shell_controller(char* cmd, void *dtb_location) {
         uart_printf("reboot: reboot the device\n");
         uart_printf("ls: Print cpio file list.\n");
         uart_printf("cat {filename}: Print content in {filename} \n");
+        uart_printf("exc: run svc #1\n");
+        uart_printf("irq: test timer interrupt\n");
     }
     else if (!strcmp(cmd, "hello")) {
         uart_puts("Hello World!\n");

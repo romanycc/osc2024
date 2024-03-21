@@ -1,5 +1,5 @@
 #include "dtb.h"
-#include "uart.h"
+#include "uart0.h"
 #include "mystring.h"
 #include <stdint.h>
 

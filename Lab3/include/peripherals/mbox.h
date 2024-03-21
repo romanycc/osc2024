@@ -1,4 +1,4 @@
-#include "../mmio.h"
+#include "peripherals/mmio.h"
 
 #ifndef MBOX_H
 #define MBOX_H 
@@ -22,4 +22,7 @@
 // tag
 #define MBOX_TAG_GET_BOARD_REVISION     0x00010002
 #define MBOX_TAG_GET_ARM_MEMORY         0x00010005
+#define MBOX_TAG_GET_VC_MEMORY          0x00010006
+#define MBOX_TAG_SET_CLOCK_RATE         0x00038002
+
 #endif
