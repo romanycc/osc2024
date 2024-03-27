@@ -47,6 +47,9 @@ _start:
     adr     x1, el1_start
     msr     elr_el2, x1
 
+    // for CurrentEL
+    mrs     x26, CurrentEL
+
     eret
 
 // Rpi3’s CPU runs in EL2 after being booted by default, but we want the kernel to run in EL1. 
@@ -66,15 +69,21 @@ el1_start:
 
     adr     x1, el0_start
     msr     elr_el1, x1
+    
+    // for CurrentEL
+    mrs     x27, CurrentEL
 
     eret
 
 el0_start:
     // set stack pointer
-    ldr     x1, =0x40000
-    mov     sp, x1
+    ldr     x3, =0x40000
+    mov     sp, x3
     // for cpio, command this line if using qemu
     mov     x0, x25
+    // for print CurrentEL
+    mov     x1, x26
+    mov     x2, x27
     // jump to main function in C
     bl      main
     // halt this core if return

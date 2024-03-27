@@ -11,7 +11,7 @@ enum shell_status{
     Parse
 };
 
-int main(void *dtb_location){
+int main(void *dtb_location, uint32_t CurrentEL2, uint32_t CurrentEL1){
     shell_init();
     heap_init();
     uart_printf("malloc test: 0x%x\n", malloc(8));
@@ -21,6 +21,9 @@ int main(void *dtb_location){
     uart_printf("initrams(before): %x\n", initrd_getLo());
     fdt_find_do(dtb_location, "linux,initrd-start", initrd_fdt_callback);
     uart_printf("initrams(after): %x\n", initrd_getLo());
+    // print CurrentEL
+    uart_printf("CurrentEL2: %d\n", CurrentEL2/4);
+    uart_printf("CurrentEL1: %d\n", CurrentEL1/4);
     enum shell_status status = Read;
     while(1){
         char cmd[CMD_LEN];
