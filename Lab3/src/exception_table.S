@@ -76,11 +76,12 @@ exception_table:
     ventry fiq_invalid_el1t        // FIQ EL1t
     ventry error_invalid_el1t      // Error EL1t
 
-    ventry sync_exc_handler        // Synchronous EL1h
+    ventry sync_exc_handler        // Synchronous EL1h, svc 0
     ventry irq_exc_handler         // IRQ EL1h
     ventry fiq_invalid_el1h        // FIQ EL1h
     ventry error_invalid_el1h      // Error EL1h
 
+    
     ventry sync_exc_handler        // Synchronous 64-bit EL0
     ventry irq_exc_handler         // IRQ 64-bit EL0
     ventry fiq_invalid_el0_64      // FIQ 64-bit EL0
@@ -138,12 +139,16 @@ error_invalid_el0_32:
 
 sync_exc_handler:
     kernel_entry
-    mrs x0, esr_el1
-    mrs x1, elr_el1
+    mov x0, #4          // pass augment through x0, x1, x2
+    mrs x1, esr_el1     // If the exception is a Synchronous exception or SError interrupt, the exception syndrome is saved in ESR_ELx.
+    mrs x2, elr_el1     // store returned address in ELR_ELx
+    mrs x3, spsr_el1
+    bl  show_exception_status
     //bl  sync_exc_router
     kernel_exit
 
 irq_exc_handler:
     kernel_entry
+    //bl  show_exception_status
     //bl  irq_exc_router
     kernel_exit
