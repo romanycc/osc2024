@@ -32,5 +32,5 @@ void not_implemented() {
 void show_exception_status(int type, unsigned long esr, unsigned long address, unsigned long spsr) {
     uart_printf("%s, ESR: 0x%x, ELR address: 0x%x, SPSR:0x%x\n", entry_error_messages[type], esr, address, spsr);
     uart_printf("Exception class (EC) 0x%x\n", (esr >> 26) & 0b111111);
-    uart_printf("Instruction specific syndrome (ISS) 0x%x\n", esr & 0xFFFFFF);
+    uart_printf("Instruction specific syndrome (ISS) 0x%x\n", esr & 0x1FFFFF);
 }

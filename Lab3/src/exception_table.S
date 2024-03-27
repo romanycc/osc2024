@@ -6,6 +6,7 @@
     mov x0, #\type      // pass augment through x0, x1, x2
     mrs x1, esr_el1     // If the exception is a Synchronous exception or SError interrupt, the exception syndrome is saved in ESR_ELx.
     mrs x2, elr_el1     // store returned address in ELR_ELx
+    mrs x3, spsr_el1
     bl  show_exception_status
     b   not_implemented
     .endm
