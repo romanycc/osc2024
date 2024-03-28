@@ -1,5 +1,5 @@
 #include "peripherals/irq.h"
-#include "peripherals/uart0.h"
+#include "peripherals/uart.h"
 #include "peripherals/timer.h"
 #include "timer.h"
 #include "queue.h"
@@ -55,22 +55,22 @@ void sync_exc_router(int type, unsigned long esr, unsigned long elr, unsigned lo
  */
 
 void uart_intr_handler() {
-    if (*UART0_MIS & 0x10) {           // UARTTXINTR
-        while (!(*UART0_FR & 0x10)) {  // RX FIFO not empty
-            char r = (char)(*UART0_DR);
-            queue_push(&read_buf, r);
-        }
-        *UART0_ICR = 1 << 4;
-    }
-    else if (*UART0_MIS & 0x20) {           // UARTRTINTR
-        while (!queue_empty(&write_buf)) {  // flush buffer to TX
-            while (*UART0_FR & 0x20) {      // TX FIFO is full
-                asm volatile("nop");
-            }
-            *UART0_DR = queue_pop(&write_buf);
-        }
-        *UART0_ICR = 2 << 4;
-    }
+    // if (*UART0_MIS & 0x10) {           // UARTTXINTR
+    //     while (!(*UART0_FR & 0x10)) {  // RX FIFO not empty
+    //         char r = (char)(*UART0_DR);
+    //         queue_push(&read_buf, r);
+    //     }
+    //     *UART0_ICR = 1 << 4;
+    // }
+    // else if (*UART0_MIS & 0x20) {           // UARTRTINTR
+    //     while (!queue_empty(&write_buf)) {  // flush buffer to TX
+    //         while (*UART0_FR & 0x20) {      // TX FIFO is full
+    //             asm volatile("nop");
+    //         }
+    //         *UART0_DR = queue_pop(&write_buf);
+    //     }
+    //     *UART0_ICR = 2 << 4;
+    // }
 }
 
 /**************************************************************************

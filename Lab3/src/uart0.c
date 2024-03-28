@@ -4,7 +4,7 @@
 #include "peripherals/gpio.h"
 #include "peripherals/mbox.h"
 
-void uart_init() {
+void uart0_init() {
     *UART0_CR = 0;  // turn off UART0
 
     /* Configure UART0 Clock Frequency */
@@ -56,7 +56,7 @@ void uart_init() {
     *UART0_CR = 0x301;
 }
 
-char uart_recv() {
+char uart0_recv() {
     // Check data ready field
     do {
         asm volatile("nop");
@@ -67,7 +67,7 @@ char uart_recv() {
     return r == '\r' ? '\n' : r;
 }
 
-void uart_send(unsigned int c) {
+void uart0_send(unsigned int c) {
     // Check transmitter idle field
     do {
         asm volatile("nop");
@@ -76,7 +76,7 @@ void uart_send(unsigned int c) {
     *UART0_DR = c;
 }
 
-void uart_printf(char* fmt, ...) {
+void uart0_printf(char* fmt, ...) {
     __builtin_va_list args;
     __builtin_va_start(args, fmt);
     extern volatile unsigned char _end;  // defined in linker
@@ -147,12 +147,12 @@ void uart_printf(char* fmt, ...) {
     }
 }
 
-void uart_flush() {
+void uart0_flush() {
     while (!(*UART0_FR & 0x10)) {
         (void)*UART0_DR;  // unused variable
     }
 }
-void uart_puts(char *s) {
+void uart0_puts(char *s) {
     while(*s) {
         /* convert newline to carriage return + newline */
         if(*s=='\n')
@@ -161,7 +161,7 @@ void uart_puts(char *s) {
     }
 }
 
-char uart_recv_raw() {
+char uart0_recv_raw() {
     do {
         asm volatile("nop");
     } while (*UART0_FR & 0x10);
