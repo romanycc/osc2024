@@ -117,7 +117,7 @@ void shell_controller(char* cmd, void *dtb_location) {
         uart_printf("reboot: reboot the device\n");
         uart_printf("ls: Print cpio file list.\n");
         uart_printf("cat {filename}: Print content in {filename} \n");
-        uart_printf("exc: run svc #0\n");
+        uart_printf("exc: run svc #1\n");
         uart_printf("irq: test timer interrupt\n");
         uart_printf("timestamp: get current timestamp\n");
     }
@@ -125,9 +125,9 @@ void shell_controller(char* cmd, void *dtb_location) {
         asm volatile("svc #1");
     }
     else if (!strcmp(cmd, "irq")) {
-        // asm volatile("svc #2");
-        // uart_read();
-        // asm volatile("svc #3");
+        asm volatile("svc #2");
+        uart_recv();
+        asm volatile("svc #3");
     }
     else if (!strcmp(cmd, "timestamp")) { // asm volatile("svc #4");
         uart_printf("timestamp: %f\n", get_timestamp());

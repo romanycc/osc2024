@@ -151,5 +151,5 @@ sync_exc_handler:
 irq_exc_handler:
     kernel_entry
     //bl  show_exception_status
-    //bl  irq_exc_router
+    bl  irq_exc_router
     kernel_exit
