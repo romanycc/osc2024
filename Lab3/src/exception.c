@@ -118,7 +118,7 @@ void irq_exc_router() {
     unsigned int irq_basic_pending = *IRQ_BASIC_PENDING;
     unsigned int core0_intr_src = *CORE0_INTR_SRC;
 
-    // GPU IRQ 57: UART Interrupt  // change this line 29
+    // GPU IRQ 57: UART Interrupt  
     if (irq_basic_pending & (1 << 19)) {
         uart_intr_handler();
     }
