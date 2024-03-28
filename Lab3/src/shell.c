@@ -122,12 +122,15 @@ void shell_controller(char* cmd, void *dtb_location) {
         uart_printf("timestamp: get current timestamp\n");
     }
     else if (!strcmp(cmd, "exc")) {
-        asm volatile("svc #0");
+        asm volatile("svc #1");
     }
     else if (!strcmp(cmd, "irq")) {
         // asm volatile("svc #2");
         // uart_read();
         // asm volatile("svc #3");
+    }
+    else if (!strcmp(cmd, "timestamp")) { // asm volatile("svc #4");
+        uart_printf("timestamp: %f\n", get_timestamp());
     }
     else if (!strcmp(cmd, "hello")) {
         uart_puts("Hello World!\n");
@@ -155,9 +158,6 @@ void shell_controller(char* cmd, void *dtb_location) {
     }
     else if (!strcmp(cmd, "ls")) {
         cpio_ls((void *)initrd_getLo());
-    }
-    else if (!strcmp(cmd, "timestamp")) {
-        uart_printf("%f\n", get_timestamp());
     }
     else {
         uart_printf("shell: command not found: %s\n", cmd);

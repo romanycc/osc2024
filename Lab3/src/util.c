@@ -26,6 +26,8 @@
 
 float get_timestamp() {
     asm volatile ("svc #4");
+    uart_printf("cntpct_el0: %d\n", cntpct_el0);
+    uart_printf("cntfrq_el0: %d\n", cntfrq_el0);
     return (float) cntpct_el0 / cntfrq_el0;
 }
 
