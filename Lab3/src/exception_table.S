@@ -144,12 +144,10 @@ sync_exc_handler:
     mrs x1, esr_el1     // If the exception is a Synchronous exception or SError interrupt, the exception syndrome is saved in ESR_ELx.
     mrs x2, elr_el1     // store returned address in ELR_ELx
     mrs x3, spsr_el1
-    //bl  show_exception_status
     bl  sync_exc_router
     kernel_exit
 
 irq_exc_handler:
     kernel_entry
-    //bl  show_exception_status
     bl  irq_exc_router
     kernel_exit

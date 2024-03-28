@@ -24,6 +24,7 @@ int main(void *dtb_location, uint32_t CurrentEL2, uint32_t CurrentEL1){
     // print CurrentEL
     uart_printf("CurrentEL2: %d\n", CurrentEL2/4);
     uart_printf("CurrentEL1: %d\n", CurrentEL1/4);
+    uart_a_puts("testuart_async\n", 16);
     enum shell_status status = Read;
     while(1){
         char cmd[CMD_LEN];

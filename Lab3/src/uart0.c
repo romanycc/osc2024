@@ -142,8 +142,8 @@ void uart0_printf(char* fmt, ...) {
     *dst = '\0';
     //
     while (*s) {
-        if (*s == '\n') uart_send('\r');
-        uart_send(*s++);
+        if (*s == '\n') uart0_send('\r');
+        uart0_send(*s++);
     }
 }
 
@@ -156,8 +156,8 @@ void uart0_puts(char *s) {
     while(*s) {
         /* convert newline to carriage return + newline */
         if(*s=='\n')
-            uart_send('\r');
-        uart_send(*s++);
+            uart0_send('\r');
+        uart0_send(*s++);
     }
 }
 
