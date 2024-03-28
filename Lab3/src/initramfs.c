@@ -1,5 +1,5 @@
 #include "initramfs.h"
-#include "uart0.h"
+#include "uart.h"
 #include "dtb.h"
 static void *lo_ramfs = 0x0;
 

@@ -3,7 +3,7 @@
 #include "peripherals/timer.h"
 #include "timer.h"
 #include "queue.h"
-#include "uart0.h"
+#include "uart.h"
 #include "shared_variables.h"
 
 extern const char *entry_error_messages[];
@@ -73,6 +73,31 @@ void uart_intr_handler() {
     }
 }
 
+/**************************************************************************
+ * uart handler. Assign the interrupt to the target service functions.
+ *************************************************************************/
+// static int uart_handler(void) {
+//   // uart_puts("uart_handler\n");
+//   // uart_puth(*AUX_MU_IIR);
+//   //  Only care the 2:1 bit in this register.
+//   switch (*AUX_MU_IIR & 0x6) {
+//   case 2:
+//     disable_uart_transmit_int();
+//     task_queue_add(uart_transmit_handler, 9);
+//     // NOTE: Don't enable interupt here, let handler decide.
+//     break;
+//   case 4:
+//     // Recieve should response immediately.
+//     uart_receive_handler();
+//     break;
+//   case 0:
+//   default:
+//     uart_puts("Error\n");
+//     break;
+//   }
+//   return 0;
+// }
+
 void arm_core_timer_intr_handler() {
     register unsigned int expire_period = CORE_TIMER_EXPRIED_PERIOD;
     asm volatile("msr cntp_tval_el0, %0" : : "r"(expire_period));
@@ -93,7 +118,7 @@ void irq_exc_router() {
     unsigned int irq_basic_pending = *IRQ_BASIC_PENDING;
     unsigned int core0_intr_src = *CORE0_INTR_SRC;
 
-    // GPU IRQ 57: UART Interrupt
+    // GPU IRQ 57: UART Interrupt  // change this line 29
     if (irq_basic_pending & (1 << 19)) {
         uart_intr_handler();
     }

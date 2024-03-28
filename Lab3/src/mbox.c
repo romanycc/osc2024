@@ -1,6 +1,6 @@
 #include "../include/peripherals/mbox.h"
 
-#include "uart0.h"
+#include "uart.h"
 
 int mbox_call(unsigned int* mbox, unsigned char channel) {
     // create 28 bit data + 4 bit channel

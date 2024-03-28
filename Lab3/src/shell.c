@@ -1,5 +1,5 @@
 #include "mystring.h"
-#include "uart0.h"
+#include "uart.h"
 #include "util.h"
 #include "mbox.h"
 #include "initramfs.h"

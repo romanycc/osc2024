@@ -1,4 +1,4 @@
-#include "uart0.h" 
+#include "uart.h" 
 
 const char *entry_error_messages[] = {
     "SYNC_INVALID_EL1t",
