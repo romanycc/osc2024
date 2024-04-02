@@ -67,6 +67,7 @@ el1_start:
     ldr     x1, =SPSR_EL1_VALUE
     msr     spsr_el1, x1
 
+    //When taking an exception to EL1, holds the address to return to.
     adr     x1, el0_start
     msr     elr_el1, x1
     

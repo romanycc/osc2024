@@ -13,7 +13,7 @@
 #define CORE2_INTR_SRC                  ((unsigned int*)0x40000068)
 #define CORE3_INTR_SRC                  ((unsigned int*)0x4000006C)
 
-#define CORE_TIMER_EXPRIED_PERIOD       0xffffff
+#define CORE_TIMER_EXPRIED_PERIOD       0x249F000
 
 #endif
 

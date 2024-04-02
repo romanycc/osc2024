@@ -126,8 +126,8 @@ void shell_controller(char* cmd, void *dtb_location) {
     }
     else if (!strcmp(cmd, "irq")) {
         asm volatile("svc #2");
-        uart_recv();
-        asm volatile("svc #3");
+        // uart_recv();
+        // asm volatile("svc #3");
     }
     else if (!strcmp(cmd, "timestamp")) { // asm volatile("svc #4");
         uart_printf("timestamp: %f\n", get_timestamp());

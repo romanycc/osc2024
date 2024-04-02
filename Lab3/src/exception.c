@@ -5,6 +5,8 @@
 #include "queue.h"
 #include "uart.h"
 #include "shared_variables.h"
+#include "util.h"
+#include "aux.h"
 
 extern const char *entry_error_messages[];
 
@@ -132,10 +134,13 @@ void irq_enable() {
 void sync_exc_router(int type, unsigned long esr, unsigned long elr, unsigned long spsr) {
     uart_printf("%s, ESR: 0x%x, ELR address: 0x%x, SPSR:0x%x\n", entry_error_messages[type], esr, elr, spsr);
     uart_printf("Exception class (EC) 0x%x\n", (esr >> 26) & 0b111111);
+    // which sys call is calling
     uart_printf("Instruction specific syndrome (ISS) 0x%x\n", esr & 0x1FFFFF);
     int ec = (esr >> 26) & 0b111111;
     int iss = esr & 0x1FFFFFF;
     if (ec == 0b010101) {  // system call
+        // determine which system call using svc #num by iss
+        // ex. If svc 1, then iss = 1
         switch (iss) {
             // case 1:
             //     uart_printf("Exception return address 0x%x\n", elr);
@@ -144,11 +149,11 @@ void sync_exc_router(int type, unsigned long esr, unsigned long elr, unsigned lo
             //     break;
             case 2:
                 arm_core_timer_enable();
-                arm_local_timer_enable();
+                // arm_local_timer_enable();
                 break;
             case 3:
                 arm_core_timer_disable();
-                arm_local_timer_disable();
+                // arm_local_timer_disable();
                 break;
             case 4:
                 asm volatile ("mrs %0, cntfrq_el0" : "=r" (cntfrq_el0)); // get current counter frequency
@@ -191,24 +196,24 @@ void sync_exc_router(int type, unsigned long esr, unsigned long elr, unsigned lo
  *************************************************************************/
 void uart_intr_handler() {
   // uart_puts("uart_handler\n");
-  // uart_puth(*AUX_MU_IIR);
   //  Only care the 2:1 bit in this register.
-  switch (*AUX_MU_IIR_REG & 0x6) {
-  //  Transmit holding register empty
-  case 2:   
+  switch (*AUX_MU_IIR & 0x6) {
+  case 2:   //  Transmit holding register empty
+    //uart_puts("Transmit interrupt!\n");
+    //uart_transmit_handler();
     disable_uart_transmit_int();
-    task_queue_add(uart_transmit_handler, 9);
-    // NOTE: Don't enable interupt here, let handler decide.
+    uart_transmit_handler();
+    //uart_transmit_handler();
+    // task_queue_add(uart_transmit_handler, 9);
+            // NOTE: Don't enable interupt here, let handler decide.
     break;
-  //  Receiver holds valid byte 
-  case 4:
-    // Recieve should response immediately.
+  case 4:   //  Receiver holds valid byte. Recieve should response immediately.
+    //uart_puts("Receive interrupt!\n");
     uart_receive_handler();
     break;
-  // No interrupts 
-  case 0:
+  case 0:   // No interrupts 
   default:
-    uart_puts("Error\n");
+    //uart_puts("Error\n");
     break;
   }
   return 0;
@@ -217,7 +222,8 @@ void uart_intr_handler() {
 void arm_core_timer_intr_handler() {
     register unsigned int expire_period = CORE_TIMER_EXPRIED_PERIOD;
     asm volatile("msr cntp_tval_el0, %0" : : "r"(expire_period));
-    uart_printf("Core timer interrupt, jiffies %d\n", ++arm_core_timer_jiffies);
+    uart_printf("Core timer interrupt, timestamp: %f\n", get_timestamp());
+    // uart_printf("Core timer interrupt, jiffies %d\n", ++arm_core_timer_jiffies);
     // bottom half simulation
     // irq_enable();
     // unsigned long long x = 100000000000;
@@ -225,27 +231,35 @@ void arm_core_timer_intr_handler() {
     // }
 }
 
-void arm_local_timer_intr_handler() {
-    *LOCAL_TIMER_IRQ_CLR = 0b11 << 30;  // clear interrupt
-    uart_printf("Local timer interrupt, jiffies %d\n", ++arm_local_timer_jiffies);
-}
+// void arm_local_timer_intr_handler() {
+//     *LOCAL_TIMER_IRQ_CLR = 0b11 << 30;  // clear interrupt
+//     uart_printf("Local timer interrupt, jiffies %d\n", ++arm_local_timer_jiffies);
+// }
 
 void irq_exc_router() {
     unsigned int irq_basic_pending = *IRQ_BASIC_PENDING;
     unsigned int core0_intr_src = *CORE0_INTR_SRC;
-
+    //uart_puts("*");
+    disable_int();
+    // disable_uart_receive_int();
     // GPU IRQ 57: UART Interrupt  
-    if (irq_basic_pending & (1 << 19)) {
+    if (*IRQ_PEND_1  & (1 << 29)) {
+        //uart_puts("=");
         uart_intr_handler();
     }
-    // ARM Core Timer Interrupt
+    //  
     else if (core0_intr_src & (1 << 1)) {
         arm_core_timer_intr_handler();
     }
-    // ARM Local Timer Interrupt
-    else if (core0_intr_src & (1 << 11)) {
-        arm_local_timer_intr_handler();
+    else{
+      //art_puts("!");
     }
+    // ARM Local Timer Interrupt
+    // else if (core0_intr_src & (1 << 11)) {
+    //     arm_local_timer_intr_handler();
+    // }
+    // enable_int();
+    // task_queue_run(); // Run the interrupt handler with INT enable.
 }
 /**************************************************************************
  * Enable mini uart interrupt.
@@ -254,8 +268,6 @@ void irq_exc_router() {
  *************************************************************************/
 int mini_uart_interrupt_enable(void) {
   *IRQ_ENABLE_1   |= (1 << 29); // Encble aux int
-  //*AUX_MU_IER = 0x1;	// Enable aux rx interrupt
-  //*GPU_INT_ROUT = 0;	// GPU FIQ&IRQ -> CORE0 FIQ&IRQ
   return 0;
 }
 /**************************************************************************
