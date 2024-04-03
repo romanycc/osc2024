@@ -14,3 +14,4 @@ int uart_transmit_handler();
 int uart_receive_handler();
 int uart_a_puts(const char *str, int len);
 int uart_a_gets(char *str, int len);
+void uart_show_a_recv();

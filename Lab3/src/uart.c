@@ -287,3 +287,9 @@ int uart_a_gets(char *str, int len) {
   rx_point = 0;
   return 0;
 }
+
+void uart_show_a_recv(){
+    for (int i=0;i<uart_buf_len;i++){
+      uart_printf("%c", rx_buf[i]);
+    }
+}

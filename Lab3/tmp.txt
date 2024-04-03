@@ -1,0 +1,27 @@
+
+
+    // mask all interrupt, and set exception level to el0
+    ldr     x1, =SPSR_EL1_VALUE
+    msr     spsr_el1, x1
+
+    //When taking an exception to EL1, holds the address to return to.
+    adr     x1, el0_start
+    msr     elr_el1, x1
+    
+
+
+    eret
+
+el0_start:
+    // set stack pointer
+    ldr     x3, =0x40000
+    mov     sp, x3
+    // for cpio, command this line if using qemu
+    mov     x0, x25
+    // for print CurrentEL
+    mov     x1, x26
+    mov     x2, x27
+    // jump to main function in C
+    bl      main
+    // halt this core if return
+    b       1b
